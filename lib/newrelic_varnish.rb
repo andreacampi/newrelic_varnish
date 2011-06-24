@@ -34,11 +34,15 @@ class NewRelicLogger
 
   def log(entry)
     Thread.current[:entry] = entry
-    perform_action_with_newrelic_trace :category => :uri, :force => true,
-          :class_name => entry.action.to_s, :name => entry.backend.to_s, :request => entry do
+
+    keys = {:category => :uri, :force => true, :request => entry}
+    keys.merge!(entry.newrelic_keys)
+
+    perform_action_with_newrelic_trace(keys) do
       NewRelic::Agent.trace_execution_duration "Custom/Varnish/Process", entry.t_req, entry.dp, :force => true
       NewRelic::Agent.trace_execution_duration "Custom/Varnish/Deliver", entry.t_req + entry.dp, entry.da, :force => true
     end
+
     Thread.current[:entry] = nil
   end
 end
@@ -56,7 +60,7 @@ t = nil
 EM.run do
   logger = NewRelicLogger.new
 
-  stream = RequestStream.new
+  stream = RequestStream.new(:processor => 'minimal')
   stream.onrequest do |data|
     t = Time.now if count == 0
 

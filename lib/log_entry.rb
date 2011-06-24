@@ -5,12 +5,14 @@ class LogEntry
   attr_accessor :request, :response
   attr_accessor :t_open, :t_req, :t_end, :dh, :dp, :da
   attr_accessor :misc
+  attr_accessor :newrelic_keys
 
   def initialize
     null_scalar_ivars
     @request = {}
     @response = {}
     @misc = []
+    @newrelic_keys = {}
   end
 
   def clear!
@@ -18,6 +20,7 @@ class LogEntry
     @request.clear
     @response.clear
     @misc.clear
+    @newrelic_keys.clear
   end
 
   def request=(header)
@@ -52,7 +55,7 @@ class LogEntry
   end
 
   def inspect
-    "#<#{self.class.name} #{method} #{url} #{protocol}\n" +
+    "#<#{self.class.name} #{object_id} #{newrelic_keys.inspect} #{method} #{url} #{protocol}\n" +
       "  request=#{request.inspect}\n" +
       "  response=#{response.inspect}\n" +
       "  misc=#{misc.inspect}>\n"

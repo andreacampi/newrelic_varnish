@@ -1,9 +1,12 @@
 require 'em/varnish_log/connection'
 require 'em/buffered_channel'
 require 'log_entry'
+require 'processor'
 
 class RequestStream
-  def initialize
+  def initialize(options = {})
+    self.class.send(:include, Processor::get(options[:processor]))
+
     @channel = EM::BufferedChannel.new
     @callbacks = []
     @entries = {}
@@ -21,29 +24,7 @@ private
     EM::VarnishLog::Connection.start(@channel)
 
     @channel.subscribe do |msg|
-      case msg[:tag]
-      when :reqstart
-        setup_entry(msg[:fd])
-
-      when :hit
-        entry_for(msg[:fd]) do |entry|
-          entry.action = :hit
-        end
-
-      when :backend
-        entry_for(msg[:fd]) do |entry|
-          entry.action  = :backend
-          msg[:str] =~ /^\d+ (\S+) \S+$/
-          entry.backend = $1
-        end
-
-      when :reqend
-        entry_for(msg[:fd]) do |entry|
-          entry.reqend(msg[:data])
-
-          @callbacks.each { |c| c.call(entry) }
-        end
-      end
+      process_message(msg)
     end
   end
 
