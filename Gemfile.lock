@@ -1,0 +1,25 @@
+PATH
+  remote: ../varnish-rb
+  specs:
+    varnish-rb (0.0.1)
+      ffi
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    eventmachine (0.12.10)
+    eventmachine (0.12.10-java)
+    ffi (1.0.6)
+      rake (>= 0.8.7)
+    ffi (1.0.6-java)
+    newrelic_rpm (3.1.0)
+    rake (0.9.2)
+
+PLATFORMS
+  java
+  ruby
+
+DEPENDENCIES
+  eventmachine
+  newrelic_rpm
+  varnish-rb!
