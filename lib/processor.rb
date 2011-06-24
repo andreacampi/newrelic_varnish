@@ -2,7 +2,7 @@ module Processor
   extend self
 
   def get(name)
-    Processor.const_get(name.capitalize)
+    Processor.const_get(name)
   end
 end
 

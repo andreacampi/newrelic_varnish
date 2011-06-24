@@ -60,7 +60,7 @@ t = nil
 EM.run do
   logger = NewRelicLogger.new
 
-  stream = RequestStream.new(:processor => 'minimal')
+  stream = RequestStream.new(:processor => 'Minimal')
   stream.onrequest do |data|
     t = Time.now if count == 0
 
