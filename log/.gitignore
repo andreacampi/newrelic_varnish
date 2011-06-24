@@ -1,0 +1,2 @@
+*.log
+newrelic_agent_store.db
